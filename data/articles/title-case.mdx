@@ -1,0 +1,210 @@
+---
+date: '2021-11-25'
+thumbnail: '/assets/title-case.jpg'
+title: How to Convert a String into Title Case with JavaScript and Regex
+description: 'A quick guide into JavaScript TitleCase'
+---
+
+# How to Convert a String into Title Case with JavaScript and Regex
+ 
+## Introduction 
+
+Title Case in general is the sentence structure where the first letter of each word is capitalized. There are different guides defining what a title case sentence looks like and one of the most common guides is the [APA style guide](https://apastyle.apa.org/style-grammar-guidelines/capitalization/title-case). APA style dictates the major words like nouns, verbs, adjectives, adverbs, and pronouns, and most four-letter words need to have the first letter capitalized while minor words like conjunctions and short prepositions (e.g.the, as, and, etc) to have lowercase first letters.
+
+## Why should I know about Title Case?
+
+Depending upon your work industry, you might have to consider using a title case. You might be writing a blog, a book, or help guide articles/documents for your software/product, and understanding how to convert to a title case can be crucial for your field. 
+
+## What do you want to achieve?
+
+Before you start to code, it is essential to understand what you are trying to achieve and how you are going to do that. For the purpose of this article, you are getting a string similar to **i waNT thIs stRing to Be conVerted to title case** which needs to be converted to a sentence structure with the first letter of each word capitalized except the words having less than four characters. Of course, the first letter is always going to be capitalized and your result would look similar to **I Want this String to be Converted to Title Case**.
+
+## How are you going to achieve it?
+
+There is no hard and fast rule to achieve a Title Case sentence structure. If you google ‘How to get title case in programming’ you will find results in thousands explaining how to get this. This article is an attempt to show my understanding of how to achieve the conversion of a string to Title Case in JavaScript.
+
+## Assumption made on inputs for the test cases
+ 
+- Any word with less than 4 characters should not have a title case.
+- The given inputs have alphanumeric characters only.
+- No special characters are used in between the strings.
+
+## Breakdown of the solution
+
+### Using JavaScript String and Array Methods
+
+You can create a function toLowerCase() which accepts input and using the power bestowed upon you by the string and array methods within the JavaScript world, you can convert the string to title case. 
+
+```
+input = i waNT thIs stRing to Be conVerted to title case.
+```
+
+The first step is to convert all the characters in the `input` to lowercase which can be done via [toLowercase](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/toLowerCase).  
+
+```
+const lowerString = input.toLowerCase()  
+
+console.log(lowerString) // i want this string to be converted to title case. 
+```
+Once we get all the characters into lowercase, we can then split them using another JavaScript string method [split()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/split) which takes the input string and breaks them into substrings according to the pattern provided and returns them as an array.  
+
+```
+const splitInput = lowerInputString.split(' ')  
+
+console.log(splitInput) // ['i', 'want', 'this', 'string', 'to', 'be', 'converted', 'to', 'title, 'case']*
+```
+
+The next step is to capture each word having more than three characters in the array and convert their first characters to uppercase letters. There are a number of different approaches to iterate through the array. Here are two examples using [arrayMap](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map) and [forEach ](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/forEach) methods. It is completely up to you to decide what you want to use. Also, the `first word` will always be in the Title case.
+
+```
+// Using map
+const convertedInput = splitInput.map((word, index) => {
+  if (index === 0) {
+    return word[0].toUpperCase() + word.slice(1)
+  }
+
+  if (word.length < 4) {
+    return word
+  } else {
+    return word[0].toUpperCase() + word.slice(1)
+  }
+})
+
+console.log(convertedInput) ['I', 'Want', 'This', 'String', 'to', 'be', 'Converted', 'to', 'Title', 'Case']
+```
+
+```
+//using forEach
+const convertedInput = []
+
+splitInput.forEach((word, index) => {
+  if (index === 0) {
+    convertedInput.push(word[0].toUpperCase() + word.slice(1))
+    //return here since no need to check for other conditions
+    return
+  }
+
+  if (word.length > 3) {
+    convertedInput.push(word[0].toUpperCase() + word.slice(1))
+  } else {
+    convertedInput.push(word)
+  }
+})
+
+console.log(convertedInput) ['I', 'Want', 'This', 'String', 'to', 'be', 'Converted', 'to', 'Title', 'Case']
+```
+The choice to loop depends upon you. The major difference between the forEach and map is that the array map returns the result in a separate array while using forEach will not return anything and performs the provided callback function on each element. The result has to be stored in a separate array. Honestly, forEach should not be used if you want something to be returned for your callback function.
+
+You might also have noticed, that there is another string method [slice()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/slice). Here, `word[0].toUpperCase()` converts the first character and then `+` connects the first character to the rest of the `word.slice(1)`  which basically removes the first character of each word.
+
+```
+word = want
+
+word[0].toUpperCase() // W
+
+word.slice(1) // ant
+
+word[0].toUpperCase() + word.slice(1) = Want
+```
+
+4. And finally use the JavaScript array method [join()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/join) to return the desired output i.e. join each element of the array with space and return it as a string.
+
+```
+const finalOutput = convertedInput.join(' ')
+
+console.log(finalOutput) // I Want This String to be Converted to Title Case
+```
+
+
+#### Complete Function
+
+```
+const toLowerCase = (input) => {
+  const lowerInputString = input.toLowerCase()
+  const splitInput = lowerInputString.split(' ')
+  const convertedInput = splitInput.map((word, index) => {
+    if (index === 0) {
+      return word[0].toUpperCase() + word.slice(1)
+    }
+
+    if (word.length < 4) {
+      return word
+    } else {
+      return word[0].toUpperCase() + word.slice(1)
+    }
+  })
+  return convertedInput.join(' ')
+}
+
+```
+
+### Combine everything into one return
+If you want to make your function smaller, you can combine everything into one single return. The fun thing about programming is you can create your own path to reach the destination. But there are things related to performance and efficiency which is a completely different topic.
+
+```
+const toLowerCase = (input) => {
+  return convertedInput = input.toLowerCase().split(' ').map((word, index) => {
+    if (index === 0) {
+      return word[0].toUpperCase() + word.slice(1)
+    }
+
+    if (word.length < 4) {
+      return word
+    } else {
+      return word[0].toUpperCase() + word.slice(1)
+    }
+  }).join()
+}
+
+```
+
+### Regex
+Regex might sound complex and advanced to most beginners and it definitely is difficult for me considering this is my first ever tech article and very little experience in the world of regex, I decided to use this article to further broaden my knowledge and share what I learned via this Title Case conversion. I will try my best to explain what I understood and how I reached the final solution for this conversion.
+
+[Regex101](https://regex101.com) is my go-to website whenever I have to work with regex. This page provides you with a console where you can start building your regex and provides an explanation of how your regex will work along with any errors you might face during the process. For the Title Case conversion using regex, the following is my thought process:
+
+```
+//First Alternative
+const toLowerCase = () => {
+  return inputString.toLowerCase().replace(/^\w|\s\w{4}/g, (word => {
+    if (word.length === 1) {
+      return word.toUpperCase()
+    } else {
+      return ' ' + word.charAt(1).toUpperCase() + word.slice(2)
+    }
+  }))
+}
+```
+
+```
+// Second Alternative
+const toLowerCase = () => {
+  return inputString.toLowerCase().replace(/(^\S)|\s\S{4}/g, (word => {
+    if (word.length === 1) {
+      return word.toUpperCase()
+    } else {
+      return ' ' + word.charAt(1).toUpperCase() + word.slice(2)
+    }
+  }))
+}
+
+```
+
+Build a regex to identify the first character of the input string and the first character of each word having a length of more than 3 characters.
+
+>Breaking down the patterns as per the Regex101: 
+^ - Asserts position at the start of a line   
+\s: Matches any whitespace character  
+\w - Matches any word character (equivalent to [a-zA-Z0-9_])  
+{4} - Matches the previous token exactly 4 times
+\S - Matches any non-whitespace characters
+
+Basically, capture the first character or any word after whitespace that has at least four characters.
+
+Use JavaScript [replace()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/replace) to match the patterns and return the desired output. You might notice some funky stuff going inside the replace function and that is the callback function within the replace to make some extra logic to identify the first character and replace the matched characters with their respective uppercase characters.
+
+## Conclusion
+
+I hope I made it easy to understand how you can use JavaScript to convert the given string into Title Case structure. The methods I have tried to explain might not be optimal for each scenario but I believe they will at least provide you with an idea to start implementing the logic in your own way.
+
+
