@@ -10,7 +10,7 @@ type Props = {
 
 const Layout: React.FC<Props> = ({ children }: Props) => {
     useEffect(() => {
-        TagManager.initialize({ gtmId: 'G-37MDX7JGYG'})
+        TagManager.initialize({ gtmId: 'GTM-NX94PH5'})
     },[])
     return (
         <>
