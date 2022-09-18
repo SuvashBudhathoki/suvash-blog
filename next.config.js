@@ -1,5 +1,6 @@
 module.exports = {
     images: {
-        unoptimized: true
+        unoptimized: true,
+        minimumCacheTTL: 31536000,
     }
 }
