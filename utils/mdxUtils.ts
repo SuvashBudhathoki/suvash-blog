@@ -1,8 +1,8 @@
-import matter from "gray-matter";
-import { join } from "path";
-import fs from "fs";
-import readingTime from "reading-time";
-import { verify } from "crypto";
+import matter from 'gray-matter';
+import { join } from 'path';
+import fs from 'fs';
+import readingTime from 'reading-time';
+import { verify } from 'crypto';
 
 type Items = {
   [key: string]: string;
@@ -15,7 +15,7 @@ type Post = {
   content: string;
 };
 
-const POSTS_PATH = join(process.cwd(), "data/articles");
+const POSTS_PATH = join(process.cwd(), 'data/articles');
 
 const getPostsFilePaths = (): string[] => {
   return fs.readdirSync(POSTS_PATH).filter((path) => /\.mdx?$/.test(path));
@@ -23,7 +23,7 @@ const getPostsFilePaths = (): string[] => {
 
 export const getPost = (slug: string): Post => {
   const fullPath = join(POSTS_PATH, `${slug}.mdx`);
-  const fileContents = fs.readFileSync(fullPath, "utf-8");
+  const fileContents = fs.readFileSync(fullPath, 'utf-8');
   const { data, content } = matter(fileContents);
 
   return {
@@ -34,8 +34,8 @@ export const getPost = (slug: string): Post => {
       date: data.date,
       description: data.description,
       readingTime: readingTime(fileContents).text,
-      ...data,
-    },
+      ...data
+    }
   };
 };
 
@@ -45,7 +45,7 @@ export const getPostItems = (
   fields: string[] = []
 ): Items => {
   // create a slug from the mdx file location
-  const slug = filePath.replace(/\.mdx?$/, "");
+  const slug = filePath.replace(/\.mdx?$/, '');
   // get the front matter data and content
   const { frontMatter: data, content } = getPost(slug);
 
@@ -54,11 +54,11 @@ export const getPostItems = (
   // just load and include the content needed
   fields.forEach((field) => {
     // load the slug
-    if (field === "slug") {
+    if (field === 'slug') {
       items[field] = slug;
     }
     // load the post content
-    if (field === "content") {
+    if (field === 'content') {
       items[field] = content;
     }
     // check if the above specified field exists on data
@@ -78,7 +78,7 @@ export const getAllPosts = (fields: string[]): Items[] => {
   // get the posts from the filepaths with the needed fields sorted by date
   const posts = filePaths
     .map((filePath) => getPostItems(filePath, fields))
-    .sort((post1, post2) => (post1.date > post2.date ? 1 : -1));
+    .sort((post1, post2) => (post1.date < post2.date ? 1 : -1));
   // return the available post
   return posts;
 };
